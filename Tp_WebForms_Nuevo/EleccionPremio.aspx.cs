@@ -19,32 +19,59 @@ namespace Tp_WebForms_Nuevo
 
         private void CargarPremios()
         {
-            ArticuloNegocio negocio = new ArticuloNegocio();
-            var lista = negocio.Listar();
+            ArticuloNegocio artNeg = new ArticuloNegocio();
+            var lista = artNeg.Listar();
 
             foreach (var art in lista)
             {
-                var imagenes = negocio.ListarImagenes(art.Id);
-                string imagen = imagenes.Count > 0 ? imagenes[0] : "https://via.placeholder.com/300";
+                var imagenes = artNeg.ListarImagenes(art.Id);
 
-                HtmlGenericControl col = new HtmlGenericControl("div");
-                col.Attributes["class"] = "col-md-4 mb-4";
+                HtmlGenericControl card = new HtmlGenericControl("div");
+                card.Attributes["class"] = "col-md-4 mb-4";
 
-                col.InnerHtml =
-                $@"
-                    <div class='card h-100'>
-                        <img src='{imagen}' class='card-img-top' style='height:200px; object-fit:cover;' />
-                        <div class='card-body'>
-                            <h5 class='card-title'>{art.Nombre}</h5>
-                            <p class='card-text'>{art.Descripcion}</p>
-                            <a href='FormularioCliente.aspx?idArticulo={art.Id}' class='btn btn-primary w-100'>
-                                Elegir este premio
-                            </a>
-                        </div>
-                    </div>
-                ";
+                string idImgPrincipal = "imgPrincipal_" + art.Id;
 
-                cardsContainer.Controls.Add(col);
+                string html = $@"
+ <div class='card shadow-sm p-2'>
+
+     <img id='{idImgPrincipal}' src='{imagenes[0]}' 
+          class='img-main w-100' />
+
+     <div class='card-body'>
+         <h5 class='card-title text-center'>{art.Nombre}</h5>
+         <p class='card-text text-center'>{art.Descripcion}</p>
+
+         <p class='text-center' style='font-size:14px; color:#007BFF; font-weight:500;'>
+             Hacé clic en una imagen para verla en grande
+         </p>
+
+         <div class='d-flex justify-content-center flex-wrap mt-3'>
+ ";
+
+
+                foreach (string img in imagenes)
+                {
+                    html += $@"
+                <img src='{img}' 
+                     class='miniatura'
+                     onclick=""cambiarImagenPrincipal('{idImgPrincipal}', '{img}')"" />";
+                }
+
+                html += $@"
+                </div>
+
+                <div class='text-center mt-3'>
+                    <a href='FormularioCliente.aspx?idPremio={art.Id}' 
+                       class='btn btn-primary w-100'>
+                        Elegir premio
+                    </a>
+                </div>
+
+            </div>
+        </div>";
+
+                card.InnerHtml = html;
+                cardsContainer.Controls.Add(card);
             }
         }
     }
