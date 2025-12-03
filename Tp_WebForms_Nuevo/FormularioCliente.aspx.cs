@@ -54,7 +54,7 @@ namespace Tp_WebForms_Nuevo
             if (!ValidarCampos())
                 return;
 
-            // Crear / actualizar cliente
+            
             Cliente cli = new Cliente
             {
                 Documento = txtDNI.Text.Trim(),
@@ -68,7 +68,7 @@ namespace Tp_WebForms_Nuevo
 
             int idCliente = cliNeg.Guardar(cli);
 
-            // Registrar participación
+            
             string codigo = Session["codigoVoucher"].ToString();
             int idArticulo = int.Parse(Request.QueryString["idArticulo"]);
 
@@ -79,20 +79,44 @@ namespace Tp_WebForms_Nuevo
 
         private bool ValidarCampos()
         {
-            if (txtDNI.Text == "" || txtNombre.Text == "" || txtApellido.Text == "" ||
-                txtEmail.Text == "" || txtDireccion.Text == "" ||
-                txtCiudad.Text == "" || txtCP.Text == "")
+           
+            if (string.IsNullOrWhiteSpace(txtDNI.Text) ||
+                string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                string.IsNullOrWhiteSpace(txtEmail.Text) ||
+                string.IsNullOrWhiteSpace(txtDireccion.Text) ||
+                string.IsNullOrWhiteSpace(txtCiudad.Text) ||
+                string.IsNullOrWhiteSpace(txtCP.Text))
             {
                 lblError.Text = "Completá todos los campos.";
                 return false;
             }
 
-            if (!txtEmail.Text.Contains("@"))
+            
+            int dniTemp;
+            if (!int.TryParse(txtDNI.Text.Trim(), out dniTemp))
             {
-                lblError.Text = "Email inválido.";
+                lblError.Text = "El DNI debe ser numérico.";
                 return false;
             }
 
+           
+            int cpTemp;
+            if (!int.TryParse(txtCP.Text.Trim(), out cpTemp))
+            {
+                lblError.Text = "El Código Postal debe ser numérico.";
+                return false;
+            }
+
+            
+            if (!txtEmail.Text.Contains("@") || !txtEmail.Text.Contains("."))
+            {
+                lblError.Text = "El email no tiene un formato válido.";
+                return false;
+            }
+
+            
+            lblError.Text = "";
             return true;
         }
     }

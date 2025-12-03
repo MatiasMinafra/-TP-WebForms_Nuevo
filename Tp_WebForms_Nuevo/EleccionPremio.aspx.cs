@@ -61,7 +61,7 @@ namespace Tp_WebForms_Nuevo
                 </div>
 
                 <div class='text-center mt-3'>
-                    <a href='FormularioCliente.aspx?idPremio={art.Id}' 
+                    <a href='FormularioCliente.aspx?idArticulo={art.Id}' 
                        class='btn btn-primary w-100'>
                         Elegir premio
                     </a>
